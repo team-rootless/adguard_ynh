@@ -18,6 +18,7 @@ app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get $app domain)
 port=$(ynh_app_setting_get $app port)
+#portDOT=$(ynh_app_setting_get $app portDOT)
 db_name=$(ynh_app_setting_get $app db_name)
 db_user=$db_name
 final_path=$(ynh_app_setting_get $app final_path)
@@ -92,6 +93,12 @@ then
 	ynh_print_info "Closing port $port"
 	ynh_exec_warn_less yunohost firewall disallow TCP $port
 fi
+
+# if yunohost firewall list | grep -q "\- $portDOT$"
+# then
+# 	ynh_print_info "Closing port $portDOT"
+# 	ynh_exec_warn_less yunohost firewall disallow TCP $portDOT
+# fi
 
 #=================================================
 # SPECIFIC REMOVE

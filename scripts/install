@@ -83,8 +83,12 @@ ynh_install_app_dependencies libcap2-bin
 ### If you're not using these lines:
 ###		- Remove the section "CLOSE A PORT" in the remove script
 
-# Find a free port
+# Find a free ports
 port=$(ynh_find_port 53)
+#portDOT=$(ynh_find_port --port=853)
+
+#ynh_app_setting_set --app=$app --key=dns_port --value=$port
+#ynh_app_setting_set --app=$app --key=dot_port --value=$portDOT
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -92,6 +96,22 @@ port=$(ynh_find_port 53)
 
 ynh_app_setting_set $app final_path $final_path
 # Download, check integrity, uncompress and patch the source from app.src
+
+# Detect the system architecture
+if [ -n "$(uname -m | grep 64)" ]; then
+	architecture="x86-64"
+elif [ -n "$(uname -m | grep 86)" ]; then
+	architecture="i386"
+elif [ -n "$(uname -m | grep arm)" ]; then
+	architecture="arm"
+else
+	ynh_die --message="Unable to detect your achitecture, please open a bug describing \
+        your hardware and the result of the command \"uname -m\"." 1
+fi
+
+# Provide correct sources
+mv ../conf/$architecture.src ../conf/app.src
+
 ynh_setup_source "$final_path"
 
 #=================================================
